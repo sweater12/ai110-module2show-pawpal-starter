@@ -13,3 +13,77 @@ classDiagram
     }
 
     ClassName --> AnotherClass : relationship
+
+    %% PawPal system classes
+    class Owner {
+        -str name
+        -str email
+        -str phone
+        -list~Pet~ pets
+        +get_name() str
+        +get_pets() list~Pet~
+        +add_pet(pet: Pet) None
+        +remove_pet(pet: Pet) None
+        +find_pet(name: str) Pet
+        +get_contact_info() str
+    }
+
+    class Pet {
+        -str name
+        -str species
+        -str breed
+        -int age
+        -str status
+        -Owner owner
+        -list~Task~ tasks
+        +get_name() str
+        +get_owner() Owner
+        +get_species() str
+        +get_age() int
+        +get_status() str
+        +set_status(status: str) None
+        +add_task(task: Task) None
+        +remove_task(task: Task) None
+        +get_tasks() list~Task~
+    }
+
+    class Task {
+        -str task_name
+        -str description
+        -datetime time
+        -int duration_minutes
+        -str priority
+        -str frequency
+        -str status
+        -Pet pet
+        +get_task_name() str
+        +get_time() datetime
+        +set_time(time: datetime) None
+        +get_priority() str
+        +set_task_status(status: str) None
+        +mark_complete() None
+        +is_complete() bool
+        +is_overdue(now: datetime) bool
+        +next_occurrence() Task
+    }
+
+    class Scheduler {
+        -Owner owner
+        -list~Task~ tasks
+        +add_task(task: Task) None
+        +remove_task(task: Task) None
+        +get_all_tasks() list~Task~
+        +get_tasks_for_pet(pet: Pet) list~Task~
+        +get_tasks_for_day(day: date) list~Task~
+        +get_pending_tasks() list~Task~
+        +sort_by_time() list~Task~
+        +sort_by_priority() list~Task~
+        +detect_conflicts() list~tuple~
+        +generate_daily_plan(day: date) list~Task~
+        +complete_task(task: Task) None
+    }
+
+    Owner "1" --> "0..*" Pet : owns
+    Pet "1" --> "0..*" Task : has
+    Scheduler "1" --> "1" Owner : plans for
+    Scheduler "1" --> "0..*" Task : manages

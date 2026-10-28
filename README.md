@@ -42,17 +42,27 @@ pip install -r requirements.txt
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
 
+## Implementation Summary
+
+I created an application that schedules a an owners day based on the tasks they need to complete for their pet/s. 
+
+The Owner class has attributes of all the owner's information and a list of all their pets. The Pet class contains attributes of all the pet's information and the tasks designated for them. The Task class has attributes of the name of the task, description, the duration, the frequency, the priority. The Scheduler class has an attribute of an object of the Owner's class to schedule their tasks for the day.
+
+An owner can have 0 or more pets. Each pet can have a list of tasks designated for them. Through the owner, the Scheduler will create their daily plan using their pets' tasks.
+
 ## 🖥️ Sample Output
 
 Paste a sample of your app's CLI or Streamlit output here so a reader can see what a generated plan looks like:
 
-```
-# e.g.:
-# Daily plan for Biscuit (Golden Retriever):
-#   08:00 — Morning walk (30 min) [priority: high]
-#   09:00 — Feeding (10 min) [priority: high]
-#   ...
-```
+Today's Schedule for Alice (Tuesday, October 27, 2026)
+--------------------------------------------------
+08:00 AM  Feed Fluffy      [Fluffy]  Priority: High
+          Feed Fluffy her favorite cat food.
+09:00 AM  Walk Buddy       [Buddy]  Priority: Medium
+          Take Buddy for a walk in the park.
+10:00 AM  Vet Appointment  [Fluffy]  Priority: High
+          Annual check-up for Fluffy.
+
 
 ## 🧪 Testing PawPal+
 

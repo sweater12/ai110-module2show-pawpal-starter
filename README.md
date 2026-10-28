@@ -68,17 +68,27 @@ Today's Schedule for Alice (Tuesday, October 27, 2026)
 
 ```bash
 # Run the full test suite:
-pytest
+python -m pytest
 
 # Run with coverage:
 pytest --cov
 ```
+These tests cover the core functionalities for the app, specifically related to the tasks. They test for:
+- changing a task's completion status
+- adding a task
+- sorting by time for the scheduler
+- creating new day tasks after the current day is completed
+- filtering the tasks based on the pet and status
+- detecting any conflicts in the scheduler
 
 Sample test output:
 
-```
-# Paste your pytest output here
-```
+tests\test_pawpal.py ................                                                                                                            [100%]
+
+================================================================= 16 passed in 0.14s ==================================================================
+
+Confidence Level: 4
+
 
 ## 📐 Smarter Scheduling
 

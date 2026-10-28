@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from pawpal_system import Owner, Pet, Scheduler, Task, TaskStatus
+from pawpal_system import Frequency, Owner, Pet, Scheduler, Task, TaskStatus
 
 
 def test_mark_complete_changes_status():
@@ -23,6 +23,50 @@ def test_add_task_increases_pet_task_count():
 
     pet.add_task(Task(task_name="Brush Buddy", time=datetime(2026, 10, 27, 18, 0)))
     assert len(pet.get_tasks()) == 2
+
+
+def test_sort_by_time_returns_tasks_in_chronological_order():
+    """Tasks added out of order, across pets, come back earliest first."""
+    owner = Owner(name="Alice")
+    fluffy = Pet(name="Fluffy", species="Cat")
+    buddy = Pet(name="Buddy", species="Dog")
+    owner.add_pet(fluffy)
+    owner.add_pet(buddy)
+    scheduler = Scheduler(owner)
+    vet = Task(task_name="Vet Appointment", time=datetime(2026, 10, 27, 10, 0))
+    feed = Task(task_name="Feed Fluffy", time=datetime(2026, 10, 27, 8, 0))
+    walk = Task(task_name="Walk Buddy", time=datetime(2026, 10, 27, 9, 0))
+    scheduler.add_task(fluffy, vet)
+    scheduler.add_task(buddy, walk)
+    scheduler.add_task(fluffy, feed)
+
+    assert scheduler.sort_by_time() == [feed, walk, vet]
+
+
+def test_complete_daily_task_creates_next_day_task():
+    """Completing a daily task adds a pending copy for the same pet one day later."""
+    owner = Owner(name="Alice")
+    buddy = Pet(name="Buddy", species="Dog")
+    owner.add_pet(buddy)
+    scheduler = Scheduler(owner)
+    walk = Task(
+        task_name="Walk Buddy",
+        time=datetime(2026, 10, 27, 9, 0),
+        duration_minutes=30,
+        frequency=Frequency.DAILY,
+    )
+    scheduler.add_task(buddy, walk)
+
+    next_walk = scheduler.complete_task(walk)
+
+    assert walk.is_complete()
+    assert next_walk is not None and next_walk is not walk
+    assert next_walk.time == walk.time + timedelta(days=1)
+    assert next_walk.status == TaskStatus.PENDING
+    assert next_walk.pet is buddy
+    assert next_walk.task_name == walk.task_name
+    assert next_walk.duration_minutes == walk.duration_minutes
+    assert buddy.get_tasks() == [walk, next_walk]
 
 
 def _make_filter_scheduler():
